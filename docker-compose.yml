@@ -1,0 +1,25 @@
+services:
+  api-vision:
+    build:
+      context: ./server
+      dockerfile: Dockerfile.dev
+    container_name: ${CONTAINER_NAME:-mini_azure_server}
+    env_file:
+      - ./server/.env
+    ports:
+      - "${BACKEND_PORT:-8000}:${BACKEND_PORT:-8000}"
+    volumes:
+      - ./server:/app
+    develop:
+      watch:
+        - action: sync
+          path: ./server
+          target: /app
+          ignore:
+            - __pycache__/
+            - .pytest_cache/
+            - model/
+        - action: rebuild
+          path: ./server/requirements.txt
+        - action: rebuild
+          path: ./server/Dockerfile.dev
